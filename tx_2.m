@@ -1,0 +1,39 @@
+% Algorithm inventor: Nguyen Quoc Khuong
+% Algorithm implementer: Nguyen Hong Phuc
+clear; clc;
+
+% =========================================================================
+% 1. DỮ LIỆU ĐẦU VÀO & THIẾT LẬP THÔNG SỐ FSK
+% =========================================================================
+text = 'trong moi truong nghien cuu khoa hoc hien dai viec ung dung cac thuat toan vao xu ly tin hieu so la dieu vo cung can thiet de toi uu hoa hieu suat truyen thong tin tren cac kenh truyen nhieu nhu am thanh duoi nuoc viec phan tich pho va su dung cac chuoi dong bo nhu m sequence se giup xac dinh chinh xac thoi diem bat dau khung.trong moi truong nghien cuu khoa hoc hien dai viec ung dung cac thuat toan vao xu ly tin hieu so la dieu vo cung can thiet de toi uu hoa hieu suat truyen thong tin tren cac kenh truyen nhieu nhu am thanh duoi nuoc viec phan tich pho va su dung cac chuoi dong bo nhu m sequence se giup xac dinh chinh xac thoi diem bat dau khung.trong moi truong nghien cuu khoa hoc hien dai viec ung dung cac thuat toan vao xu ly tin hieu so la dieu vo cung can thiet de toi uu hoa hieu suat truyen thong tin tren cac kenh truyen nhieu nhu am thanh duoi nuoc viec phan tich pho va su dung cac chuoi dong bo nhu m sequence se giup xac dinh chinh xac thoi diem bat dau khung.trong moi truong nghien cuu khoa hoc hien dai viec ung dung cac thuat toan vao xu ly tin hieu so la dieu vo cung can thiet de toi uu hoa hieu suat truyen thong tin tren cac kenh truyen nhieu nhu am thanh duoi nuoc viec phan tich pho va su dung cac chuoi dong bo nhu m sequence se giup xac dinh chinh xac thoi diem bat dau khung.';
+
+fc = 12400;       % Tần số sóng mang (Hz)
+df = 400;         % Độ lệch tần số (Hz)
+fs = 96000;       % Tần số lấy mẫu (Hz)
+br = 800;         % Tốc độ bit (bps)
+z = 250;          % Số bit chèn không
+N = round(fs/br); % Số lượng mẫu trên 1 bit
+
+% =========================================================================
+% 2. CẤU TRÚC KHUNG TRUYỀN (FRAME STRUCTURE)
+% =========================================================================
+% Preamble 64-bit
+preamble = [ ...
+1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 ...
+1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 ...
+1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 ...
+1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 ];
+
+% Sync sequence 255-bit (m-sequence)
+sync = [ ...
+1 1 1 1 1 1 1 1 0 1 1 1 0 0 0 1 0 0 1 1 1 0 1 0 0 1 0 1 1 0 0 1 ...
+1 1 1 1 0 1 0 0 0 0 1 0 0 1 0 0 0 1 1 0 1 0 1 1 1 0 1 1 1 1 0 0 ...
+1 0 0 0 0 1 0 1 1 1 0 1 1 0 1 0 1 0 0 0 1 1 1 0 0 0 0 1 1 1 0 1 ...
+1 1 0 0 0 1 0 1 0 0 1 1 1 1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 1 0 1 1 ...
+1 0 1 0 1 1 0 1 0 0 0 1 1 1 0 0 0 0 1 1 0 1 1 0 1 1 0 0 0 1 0 1 ...
+0 0 1 1 1 1 1 1 0 1 1 0 0 1 0 0 0 0 1 1 1 0 1 1 0 1 0 0 0 1 1 0 ...
+1 0 1 0 1 1 0 0 1 1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 1 1 0 1 0 1 0 1 ...
+0 1 0 0 1 1 0 1 1 1 0 0 0 1 1 0 1 1 0 0 1 1 0 ];
+
+payload = text2bits(text);
+ze = zeros(1, z*N);  % Tín hiệu chèn không (Guard Interval)
